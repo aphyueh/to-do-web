@@ -1,42 +1,87 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, gql } from '@apollo/client';
+
+const GET_TODOS = gql`
+  query Todos($userId: ID!) {
+    todos(userId: $userId) {
+      id
+      text
+      completed
+    }
+  }
+`;
+
+const ADD_TODO = gql`
+  mutation AddTodo($userId: ID!, $text: String!) {
+    addTodo(userId: $userId, text: $text) {
+      id
+      text
+    }
+  }
+`;
+
+const DELETE_TODO = gql`
+  mutation DeleteTodo($id: ID!) {
+    deleteTodo(id: $id)
+  }
+`;
+
+const TOGGLE_TODO = gql`
+  mutation ToggleTodoCompleted($id: ID!) {
+    toggleTodoCompleted(id: $id) {
+      id
+      completed
+    }
+  }
+`;
 
 const TodoPage = () => {
-  const [todos, setTodos] = useState([
-    { id: 1, text: 'Complete the Diprella project', completed: false },
-    { id: 2, text: 'Review code with team', completed: true },
-    { id: 3, text: 'Update documentation', completed: false }
-  ]);
-  const [newTodo, setNewTodo] = useState('');
-  const navigate = useNavigate();
+    const [userId, setUserId] = useState(null);
+    const [newTodo, setNewTodo] = useState('');
+    const navigate = useNavigate();
 
-  const addTodo = (e) => {
-    e.preventDefault();
-    if (newTodo.trim()) {
-      setTodos([...todos, {
-        id: Date.now(),
-        text: newTodo.trim(),
-        completed: false
-      }]);
-      setNewTodo('');
-    }
-  };
+    useEffect(() => {
+        const id = localStorage.getItem('userId');
+        if (!id) navigate('/');
+        setUserId(id);
+    }, [navigate]);
 
-  const toggleTodo = (id) => {
-    setTodos(todos.map(todo =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    ));
-  };
+    const { data, refetch } = useQuery(GET_TODOS, {
+        variables: { userId },
+        skip: !userId,
+    });
 
-  const deleteTodo = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id));
-  };
+    const [addTodoMutation] = useMutation(ADD_TODO);
+    const [deleteTodoMutation] = useMutation(DELETE_TODO);
+    const [toggleTodoMutation] = useMutation(TOGGLE_TODO);
+
+    const handleAdd = async (e) => {
+        e.preventDefault();
+        if (!newTodo.trim()) return;
+
+        await addTodoMutation({ variables: { userId, text: newTodo } });
+        setNewTodo('');
+        refetch();
+    };
+
+    const handleDelete = async (id) => {
+        await deleteTodoMutation({ variables: { id } });
+        refetch();
+    };
+
+    const handleToggle = async (id) => {
+        await toggleTodoMutation({ variables: { id } });
+        refetch();
+    };
 
   const handleLogout = () => {
+    localStorage.removeItem('userId');
     navigate('/');
   };
 
-  const completedCount = todos.filter(todo => todo.completed).length;
+  const todos = data?.todos || [];
+  const completedCount = 0; // update if you add completion tracking
   const totalCount = todos.length;
 
   return (
@@ -45,10 +90,10 @@ const TodoPage = () => {
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">D</span>
+            <div className="w-14 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold">TODO</span>
             </div>
-            <h1 className="text-xl font-semibold text-gray-800">Diprella Tasks</h1>
+            <h1 className="text-xl font-semibold text-gray-800">TodoBreeze</h1>
           </div>
           <button
             onClick={handleLogout}
@@ -92,7 +137,7 @@ const TodoPage = () => {
         {/* Add Todo Form */}
         <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Add New Task</h3>
-          <form onSubmit={addTodo} className="flex space-x-3">
+          <form onSubmit={handleAdd} className="flex space-x-3">
             <input
               type="text"
               value={newTodo}
@@ -132,43 +177,42 @@ const TodoPage = () => {
                     todo.completed ? 'opacity-75' : ''
                   }`}
                 >
-                  <button
-                    onClick={() => toggleTodo(todo.id)}
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-                      todo.completed
-                        ? 'bg-teal-500 border-teal-500 text-white'
-                        : 'border-gray-300 hover:border-teal-500'
-                    }`}
-                  >
-                    {todo.completed && (
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                  </button>
-                  <span
-                    className={`flex-1 ${
-                      todo.completed
-                        ? 'line-through text-gray-500'
-                        : 'text-gray-800'
-                    }`}
-                  >
-                    {todo.text}
-                  </span>
-                  <button
-                    onClick={() => deleteTodo(todo.id)}
-                    className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+                    <button
+                        onClick={() => handleToggle(todo.id)}
+                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                        todo.completed
+                            ? 'bg-teal-500 border-teal-500 text-white'
+                            : 'border-gray-300 hover:border-teal-500'
+                        }`}
+                    >
+                        {todo.completed && (
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        )}
+                    </button>
+                    <span
+                        className={`flex-1 ${
+                        todo.completed
+                            ? 'line-through text-gray-500'
+                            : 'text-gray-800'
+                        }`}
+                    >
+                        {todo.text}
+                    </span>
+                    <button
+                        onClick={() => handleDelete(todo.id)}
+                        className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
                 </div>
               ))
             )}
           </div>
         </div>
-
         {/* Progress Section */}
         {todos.length > 0 && (
           <div className="mt-6 bg-white rounded-xl shadow-sm border p-6">
