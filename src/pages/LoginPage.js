@@ -25,7 +25,7 @@ const SIGNUP = gql`
 `;
 
 const LoginPage = () => {
-    const [isSignUp, setIsSignUp] = useState(false);
+    const [isSignIn, setIsSignIn] = useState(false);
     const [login] = useMutation(LOGIN);
     const [signup] = useMutation(SIGNUP);
     const [formData, setFormData] = useState({
@@ -51,15 +51,16 @@ const LoginPage = () => {
         const { name, email, password } = formData;
         if (!email || !password) {
             alert('Error', 'Please fill in all fields');
+            setError('Please fill in all fields');
             return;
         }
 
-        if (isSignUp && !name) {
+        if (isSignIn && !name) {
             setError('Please enter your name');
             return;
         }
 
-        if (!isSignUp) {
+        if (!isSignIn) {
             try {
                 const { data } = await signup({ variables: { name, email, password } });
                 localStorage.setItem('userId', data.signup.id);
@@ -80,7 +81,7 @@ const LoginPage = () => {
 
 
     const toggleMode = () => {
-        setIsSignUp(!isSignUp);
+        setIsSignIn(!isSignIn);
         setFormData({ name: '', email: '', password: '' });
         setError(''); // Clear errors when switching modes
     };
@@ -89,10 +90,10 @@ const LoginPage = () => {
         <div className="min-h-screen flex relative overflow-hidden">
             {/* Sliding Overlay Panel */}
         <div className={`sliding-panel absolute top-0 w-1/2 h-full z-10 transition-transform duration-700 ease-in-out flex flex-col justify-center items-center text-white p-8 ${
-            isSignUp ? 'translate-x-full' : 'translate-x-0'
+            isSignIn ? 'translate-x-full' : 'translate-x-0'
                 }`}
                 style={{
-                    '--panel-bg-image': `url(${isSignUp ? signupBg : loginBg})`
+                    '--panel-bg-image': `url(${isSignIn ? signupBg : loginBg})`
                 }}>
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-10">
@@ -106,10 +107,10 @@ const LoginPage = () => {
         {/* Content */}
                     <div className="relative z-10">
                         <h1 className="text-4xl font-bold mb-6">
-                            {isSignUp ? 'Hello, Friend!' : 'Welcome Back!'}
+                            {isSignIn ? 'Hello, Friend!' : 'Welcome Back!'}
                         </h1>
                         <p className="text-lg mb-8 opacity-90">
-                            {isSignUp
+                            {isSignIn
                                 ? 'Enter your personal details and start journey with us'
                                 : 'To keep connected with us please login with your personal info'
                             }
@@ -118,7 +119,7 @@ const LoginPage = () => {
                             onClick={toggleMode}
                             className="toggle-button"
                         >
-                            {isSignUp ? 'SIGN UP' : 'SIGN IN'}
+                            {isSignIn ? 'SIGN UP' : 'SIGN IN'}
                         </button>
                     </div>
                 </div>
@@ -126,7 +127,7 @@ const LoginPage = () => {
 
             {/* Left Side - Sign In Form */}
     <div className={`flex-1 bg-white flex flex-col justify-center items-center p-8 transition-opacity duration-500 ${
-    isSignUp ? 'opacity-100' : 'opacity-0 pointer-events-none'
+    isSignIn ? 'opacity-100' : 'opacity-0 pointer-events-none'
                 }`}>
                 <div className="w-full max-w-md">
                         <h2 className="text-heading">
@@ -149,6 +150,13 @@ const LoginPage = () => {
                         <p className="text-center text-gray-500 mb-6">
                             or use your email account:
                         </p>
+
+                        {/* Error Message */}
+                        {error && !isSignIn && (
+                            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                                {error}
+                            </div>
+                        )}
 
                         {/* Sign In Form */}
                         <form onSubmit={handleSubmit} className="space-y-4">
@@ -204,7 +212,7 @@ const LoginPage = () => {
 
             {/* Right Side - Sign Up Form */}
       <div className={`flex-1 bg-white flex flex-col justify-center items-center p-8 transition-opacity duration-500 ${
-        isSignUp ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        isSignIn ? 'opacity-0 pointer-events-none' : 'opacity-100'
                 }`}>
                 <div className="w-full max-w-md">
                         <h2 className="text-heading">
