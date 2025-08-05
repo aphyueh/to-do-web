@@ -11,6 +11,11 @@ TodoBreeze is a responsive web application built with React and Tailwind CSS, al
 - **GraphQL Backend**: Integrates with a backend hosted on AWS Lambda ([to-do-backend](https://github.com/aphyueh/to-do-backend)).
 - **Deployment**: Hosted on Vercel for fast and reliable performance ([Live Demo](https://to-do-website-liard.vercel.app/)).
 
+## Screenshots
+<img src="/public/demo-login-screenshot.png" alt="Screenshot of login screen">
+<img src="/public/demo-signup-screenshot.png" alt="Screenshot of signup screen">
+<img src="/public/demo-todo-screenshot.png" alt="Screenshot of Todo screen">
+
 ## Tech Stack
 
 - **Frontend**: React, Tailwind CSS, Apollo Client (for GraphQL queries/mutations)
@@ -23,7 +28,7 @@ TodoBreeze is a responsive web application built with React and Tailwind CSS, al
 ### Prerequisites
 
 - Node.js (v14 or higher)
-- npm or yarn
+- npm 
 - A running instance of the GraphQL backend ([to-do-backend](https://github.com/aphyueh/to-do-backend))
 
 ### Installation
@@ -71,9 +76,12 @@ Visit the live demo: [https://to-do-website-liard.vercel.app/](https://to-do-web
 ## Project Structure
 
 - `src/`
-  - `assets/`: Images and CSS files (e.g., `login-bg.png`, `signup-bg.png`, `todobreeze.css`).
-  - `components/`: React components, including `LoginPage` and `TodoPage`.
-  - `index.js`: Entry point with Apollo Client setup.
+   - `apollo/`: `provider.js` 
+   - `assets/`: Images and CSS files (e.g., `login-bg.png`, `signup-bg.png`, `todobreeze.css`).
+   - `pages/`: React components, including `LoginPage` and `TodoPage`.
+   - `index.js`: Entry point with Apollo Client setup.
+   - `App.js`
+   - '
 - `public/`: Static assets like `todobreeze-logo.png`.
 
 ## Usage
@@ -92,20 +100,6 @@ Visit the live demo: [https://to-do-website-liard.vercel.app/](https://to-do-web
 3. **Logout**:
    - Click the "Logout" button to clear your session and return to the login page.
 
-## Contributing
+## Author
 
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature`).
-3. Commit your changes (`git commit -m "Add your feature"`).
-4. Push to the branch (`git push origin feature/your-feature`).
-5. Open a pull request.
-
-## License
-
-This project is licensed under the MIT License.
-
-## Contact
-
-For issues or suggestions, please open an issue on the [GitHub repository](https://github.com/aphyueh/to-do-web).
+**Amber Pang** - [GitHub Profile](https://github.com/aphyueh)
