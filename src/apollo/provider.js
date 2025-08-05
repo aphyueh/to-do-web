@@ -7,7 +7,7 @@ import {
 } from '@apollo/client';
 
 const client = new ApolloClient({
-  uri: 'http://192.168.68.65:4000/graphql', // <-- Replace with your backend URL
+  uri: 'https://r4dz7ss5od.execute-api.us-east-1.amazonaws.com/dev/graphql', 
   cache: new InMemoryCache()
 });
 
