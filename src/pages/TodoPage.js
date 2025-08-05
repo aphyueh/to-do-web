@@ -17,6 +17,7 @@ const ADD_TODO = gql`
     addTodo(userId: $userId, text: $text) {
       id
       text
+      completed
     }
   }
 `;
@@ -40,21 +41,31 @@ const TodoPage = () => {
     const [userId, setUserId] = useState(null);
     const [newTodo, setNewTodo] = useState('');
     const navigate = useNavigate();
+    
+    const [addTodoMutation] = useMutation(ADD_TODO);
+    const [deleteTodoMutation] = useMutation(DELETE_TODO);
+    const [toggleTodoMutation] = useMutation(TOGGLE_TODO);
 
     useEffect(() => {
         const id = localStorage.getItem('userId');
+        console.log('Retrieved userId from localStorage:', id); 
         if (!id) navigate('/');
         setUserId(id);
     }, [navigate]);
 
-    const { data, refetch } = useQuery(GET_TODOS, {
+    const { data, loading, error, refetch } = useQuery(GET_TODOS, {
         variables: { userId },
         skip: !userId,
     });
 
-    const [addTodoMutation] = useMutation(ADD_TODO);
-    const [deleteTodoMutation] = useMutation(DELETE_TODO);
-    const [toggleTodoMutation] = useMutation(TOGGLE_TODO);
+    console.log('Query data:', data);
+    console.log('Query loading:', loading);
+    console.log('Query error:', error);
+    console.log('UserId:', userId);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
+
 
     const handleAdd = async (e) => {
         e.preventDefault();
@@ -81,7 +92,7 @@ const TodoPage = () => {
   };
 
   const todos = data?.todos || [];
-  const completedCount = 0; // update if you add completion tracking
+  const completedCount = todos.filter(todo => todo.completed).length;; 
   const totalCount = todos.length;
 
   return (
@@ -90,14 +101,12 @@ const TodoPage = () => {
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-14 h-10 bg-teal-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">TODO</span>
-            </div>
+            <img src="/todobreeze-logo.png" alt="TodoBreeze Logo" className="w-10 h-10" />
             <h1 className="text-xl font-semibold text-gray-800">TodoBreeze</h1>
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+            className="logout-button"
           >
             Logout
           </button>
@@ -107,7 +116,7 @@ const TodoPage = () => {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-6 py-8">
         {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-teal-500 to-teal-600 rounded-2xl p-8 text-white mb-8 relative overflow-hidden">
+        <div className="welcome-section">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-4 right-4 w-24 h-24 bg-white rounded-full blur-2xl"></div>
             <div className="absolute bottom-4 left-4 w-32 h-32 bg-white rounded-full blur-3xl"></div>
@@ -147,7 +156,7 @@ const TodoPage = () => {
             />
             <button
               type="submit"
-              className="px-6 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors font-medium"
+              className="add-task-button"
             >
               Add Task
             </button>

@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, gql } from '@apollo/client';
+import loginBg from '../assets/images/login-bg.png';
+import signupBg from '../assets/images/signup-bg.png';
+import '../assets/css/todobreeze.css'
+
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
@@ -74,10 +78,13 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex relative overflow-hidden">
-      {/* Sliding Overlay Panel */}
-      <div className={`absolute top-0 w-1/2 h-full bg-gradient-to-br from-teal-400 to-teal-600 z-20 transition-transform duration-700 ease-in-out flex flex-col justify-center items-center text-white p-8 ${
-        isSignUp ? 'translate-x-full' : 'translate-x-0'
-      }`}>
+        {/* Sliding Overlay Panel */}
+        <div className={`sliding-panel absolute top-0 w-1/2 h-full z-10 transition-transform duration-700 ease-in-out flex flex-col justify-center items-center text-white p-8 ${
+            isSignUp ? 'translate-x-full' : 'translate-x-0'
+        }`} 
+        style={{
+            '--panel-bg-image': `url(${isSignUp ? signupBg : loginBg})`
+        }}>
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl"></div>
@@ -87,42 +94,45 @@ const LoginPage = () => {
         
         {/* Content */}
         <div className="z-10 text-center max-w-md">
-          <h1 className="text-4xl font-bold mb-6">
-            {isSignUp ? 'Hello, Friend!': 'Welcome Back!' }
-          </h1>
-          <p className="text-lg mb-8 opacity-90">
-            {isSignUp 
-              ? 'Enter your personal details and start journey with us'
-              : 'To keep connected with us please login with your personal info' 
+        {/* Content */}
+        <div className="relative z-10">
+            <h1 className="text-4xl font-bold mb-6">
+            {isSignUp ? 'Hello, Friend!' : 'Welcome Back!'}
+            </h1>
+            <p className="text-lg mb-8 opacity-90">
+            {isSignUp
+                ? 'Enter your personal details and start journey with us'
+                : 'To keep connected with us please login with your personal info'
             }
-          </p>
-          <button
+            </p>
+            <button
             onClick={toggleMode}
-            className="px-8 py-3 border-2 border-white text-white bg-transparent rounded-full hover:bg-white hover:text-teal-500 transition-all duration-300 font-semibold tracking-wider"
-          >
+            className="toggle-button"
+            >
             {isSignUp ? 'SIGN UP' : 'SIGN IN'}
-          </button>
+            </button>
         </div>
-      </div>
+        </div>
+    </div>
 
-      {/* Left Side - Sign In Form */}
-      <div className={`flex-1 bg-white flex flex-col justify-center items-center p-8 transition-opacity duration-500 ${
-        isSignUp ? 'opacity-100' : 'opacity-0 pointer-events-none'
-      }`}>
+    {/* Left Side - Sign In Form */}
+    <div className={`flex-1 bg-white flex flex-col justify-center items-center p-8 transition-opacity duration-500 ${
+    isSignUp ? 'opacity-100' : 'opacity-0 pointer-events-none'
+    }`}>
         <div className="w-full max-w-md">
-          <h2 className="text-3xl font-bold text-teal-500 mb-8 text-center">
+          <h2 className="text-heading">
             Sign in to TodoBreeze
           </h2>
 
           {/* Social Login Buttons */}
           <div className="flex justify-center space-x-4 mb-6">
-            <button className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors">
+            <button className="social-button">
               <span className="text-blue-600 font-bold">f</span>
             </button>
-            <button className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors">
+            <button className="social-button">
               <span className="text-red-500 font-bold">G+</span>
             </button>
-            <button className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors">
+            <button className="social-button">
               <span className="text-blue-700 font-bold">in</span>
             </button>
           </div>
@@ -175,7 +185,7 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              className="w-full py-3 bg-teal-500 text-white rounded-full hover:bg-teal-600 transition-colors font-semibold tracking-wider mt-6"
+              className="submit-button"
             >
               SIGN IN
             </button>
@@ -188,19 +198,19 @@ const LoginPage = () => {
         isSignUp ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}>
         <div className="w-full max-w-md">
-          <h2 className="text-3xl font-bold text-teal-500 mb-8 text-center">
+          <h2 className="text-heading">
             Create Account
           </h2>
 
           {/* Social Login Buttons */}
           <div className="flex justify-center space-x-4 mb-6">
-            <button className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors">
+            <button className="social-button">
               <span className="text-blue-600 font-bold">f</span>
             </button>
-            <button className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors">
+            <button className="social-button">
               <span className="text-red-500 font-bold">G+</span>
             </button>
-            <button className="w-12 h-12 border border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors">
+            <button className="social-button">
               <span className="text-blue-700 font-bold">in</span>
             </button>
           </div>
@@ -264,7 +274,7 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              className="w-full py-3 bg-teal-500 text-white rounded-full hover:bg-teal-600 transition-colors font-semibold tracking-wider mt-6"
+              className="submit-button"
             >
               SIGN UP
             </button>
@@ -275,9 +285,7 @@ const LoginPage = () => {
       {/* Logo - Fixed Position */}
       <div className="absolute top-6 left-6 z-30">
         <div className="flex items-center space-x-2">
-          <div className="w-12 h-8 bg-teal-500 rounded-md flex items-center justify-center">
-            <span className="text-white font-bold text-sm">TODO</span>
-          </div>
+          <img src="/todobreeze-logo.png" alt="TodoBreeze Logo" className="w-8 h-8" />
           <span className="text-gray-700 font-semibold">TodoBreeze</span>
         </div>
       </div>
