@@ -1,70 +1,111 @@
-# Getting Started with Create React App
+# TodoBreeze - React Website
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+TodoBreeze is a responsive web application built with React and Tailwind CSS, allowing users to manage their tasks efficiently with a clean and intuitive interface. It features user authentication (login and signup) and a to-do list with progress tracking. The app is deployed on Vercel and integrates with a GraphQL backend hosted on AWS Lambda.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **User Authentication**: Secure login and signup functionality using GraphQL mutations.
+- **To-Do List Management**: Add, delete, and toggle the completion status of tasks.
+- **Progress Tracking**: Visual progress bar displaying the percentage of completed tasks.
+- **Responsive Design**: Optimized for both desktop and mobile devices using Tailwind CSS.
+- **GraphQL Backend**: Integrates with a backend hosted on AWS Lambda ([to-do-backend](https://github.com/aphyueh/to-do-backend)).
+- **Deployment**: Hosted on Vercel for fast and reliable performance ([Live Demo](https://to-do-website-liard.vercel.app/)).
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend**: React, Tailwind CSS, Apollo Client (for GraphQL queries/mutations)
+- **Backend**: GraphQL API hosted on AWS Lambda ([to-do-backend](https://github.com/aphyueh/to-do-backend))
+- **Deployment**: Vercel
+- **Build Tool**: Create React App
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js (v14 or higher)
+- npm or yarn
+- A running instance of the GraphQL backend ([to-do-backend](https://github.com/aphyueh/to-do-backend))
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/aphyueh/to-do-web.git
+   cd to-do-web
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Configure the GraphQL endpoint:
+   - Update the Apollo Client configuration in `src/index.js` to point to your GraphQL backend URL (e.g., the AWS Lambda endpoint from [to-do-backend](https://github.com/aphyueh/to-do-backend)).
 
-### `npm run eject`
+4. Run the app in development mode:
+   ```bash
+   npm start
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Available Scripts
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `npm start`: Runs the app in development mode.
+- `npm test`: Launches the test runner in interactive watch mode.
+- `npm run build`: Builds the app for production to the `build` folder.
+- `npm run eject`: Ejects the Create React App configuration (one-way operation).
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+For more details, refer to the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Deployment
 
-## Learn More
+The app is deployed on Vercel. To deploy your own instance:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Push your code to a GitHub repository.
+2. Connect the repository to Vercel via the Vercel dashboard.
+3. Configure environment variables (if any) in Vercel to point to your GraphQL backend.
+4. Deploy the app and access it via the provided Vercel URL.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Visit the live demo: [https://to-do-website-liard.vercel.app/](https://to-do-website-liard.vercel.app/)
 
-### Code Splitting
+## Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- `src/`
+  - `assets/`: Images and CSS files (e.g., `login-bg.png`, `signup-bg.png`, `todobreeze.css`).
+  - `components/`: React components, including `LoginPage` and `TodoPage`.
+  - `index.js`: Entry point with Apollo Client setup.
+- `public/`: Static assets like `todobreeze-logo.png`.
 
-### Analyzing the Bundle Size
+## Usage
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. **Login/Signup**:
+   - Navigate to the login page.
+   - Enter your email and password to log in, or provide a name, email, and password to sign up.
+   - Upon successful authentication, you’ll be redirected to the to-do list page.
 
-### Making a Progressive Web App
+2. **Managing Tasks**:
+   - Add a new task using the input form.
+   - Toggle task completion by clicking the checkbox.
+   - Delete tasks using the trash icon.
+   - View your progress with the progress bar and task statistics.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+3. **Logout**:
+   - Click the "Logout" button to clear your session and return to the login page.
 
-### Advanced Configuration
+## Contributing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Contributions are welcome! Please follow these steps:
 
-### Deployment
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature`).
+3. Commit your changes (`git commit -m "Add your feature"`).
+4. Push to the branch (`git push origin feature/your-feature`).
+5. Open a pull request.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## License
 
-### `npm run build` fails to minify
+This project is licensed under the MIT License.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Contact
+
+For issues or suggestions, please open an issue on the [GitHub repository](https://github.com/aphyueh/to-do-web).
