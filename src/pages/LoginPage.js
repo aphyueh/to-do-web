@@ -55,10 +55,11 @@ const LoginPage = () => {
             return;
         }
 
-        if (isSignIn && !name) {
+        if (!isSignIn && !name) {
             setError('Please enter your name');
             return;
         }
+        console.log('isSignIn:', isSignIn);
 
         if (!isSignIn) {
             try {
