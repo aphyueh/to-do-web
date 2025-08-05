@@ -201,8 +201,9 @@ const LoginPage = () => {
                             </div>
 
                             <button
-              type="submit"
+                                type="submit"
                                 className="submit-button"
+                                onClick={handleSubmit}
                             >
                                 SIGN IN
                             </button>
