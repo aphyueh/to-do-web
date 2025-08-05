@@ -50,7 +50,6 @@ const LoginPage = () => {
 
         const { name, email, password } = formData;
         if (!email || !password) {
-            alert('Error', 'Please fill in all fields');
             setError('Please fill in all fields');
             return;
         }
@@ -67,7 +66,9 @@ const LoginPage = () => {
                 localStorage.setItem('userId', data.signup.id);
                 navigate('/todos');
             } catch (err) {
-                alert('Signup failed', err.message);
+                console.error('Signup error:', err);
+                setError('Signup failed', err.message);
+                // alert('Signup failed', err.message);
             }
         } else {
             try {
@@ -75,7 +76,9 @@ const LoginPage = () => {
                 localStorage.setItem('userId', data.login.id);
                 navigate('/todos');
             } catch (err) {
-                alert('Login failed', err.message);
+                console.error('Login error:', err);
+                setError('Login failed', err.message);
+                // alert('Login failed', err.message);
             }
         }
     };
@@ -105,7 +108,7 @@ const LoginPage = () => {
 
                 {/* Content */}
                 <div className="z-10 text-center max-w-md">
-        {/* Content */}
+        
                     <div className="relative z-10">
                         <h1 className="text-4xl font-bold mb-6">
                             {isSignIn ? 'Hello, Friend!' : 'Welcome Back!'}
@@ -153,7 +156,7 @@ const LoginPage = () => {
                         </p>
 
                         {/* Error Message */}
-                        {error && !isSignIn && (
+                        {error && isSignIn && (
                             <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
                                 {error}
                             </div>
@@ -237,6 +240,14 @@ const LoginPage = () => {
                         <p className="text-center text-gray-500 mb-6">
                             or use your email for registration:
                         </p>
+
+                        {/* Error Message */}
+                        {error && !isSignIn && (
+                            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                                {error}
+                            </div>
+                        )}
+
 
                         {/* Sign Up Form */}
                         <form onSubmit={handleSubmit} className="space-y-4">

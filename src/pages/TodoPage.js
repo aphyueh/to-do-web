@@ -46,55 +46,74 @@ const TodoPage = () => {
     const [deleteTodoMutation] = useMutation(DELETE_TODO);
     const [toggleTodoMutation] = useMutation(TOGGLE_TODO);
 
-    useEffect(() => {
-        const id = localStorage.getItem('userId');
-        console.log('Retrieved userId from localStorage:', id); 
-        if (!id) navigate('/');
-        setUserId(id);
-    }, [navigate]);
+  useEffect(() => {
+    const id = localStorage.getItem('userId');
+    console.log('Retrieved userId from localStorage:', id);
 
-    const { data, loading, error, refetch } = useQuery(GET_TODOS, {
-        variables: { userId },
-        skip: !userId,
-    });
+    if (!id) {
+      navigate('/');
+      return;
+    }
 
-    console.log('Query data:', data);
-    console.log('Query loading:', loading);
-    console.log('Query error:', error);
-    console.log('UserId:', userId);
+    setUserId(id);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
-
-
-    const handleAdd = async (e) => {
-        e.preventDefault();
-        if (!newTodo.trim()) return;
-
-        await addTodoMutation({ variables: { userId, text: newTodo } });
-        setNewTodo('');
-        refetch();
+    // ⛔ Intercept browser back button and confirm logout
+    const handlePopState = () => {
+      const confirmed = window.confirm('Are you sure you want to log out and leave this page?');
+      if (confirmed) {
+        localStorage.removeItem('userId');
+        navigate('/');
+      } else {
+        // Prevent navigation by pushing current page back to history
+        window.history.pushState(null, '', window.location.pathname);
+      }
     };
 
-    const handleDelete = async (id) => {
-        await deleteTodoMutation({ variables: { id } });
-        refetch();
-    };
+    window.addEventListener('popstate', handlePopState);
+    window.history.pushState(null, '', window.location.pathname); // Push current state to detect pop
 
-    const handleToggle = async (id) => {
-        await toggleTodoMutation({ variables: { id } });
-        refetch();
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
     };
+  }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('userId');
-    navigate('/');
+  const { data, loading, error, refetch } = useQuery(GET_TODOS, {
+    variables: { userId },
+    skip: !userId,
+  });
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    if (!newTodo.trim()) return;
+    await addTodoMutation({ variables: { userId, text: newTodo } });
+    setNewTodo('');
+    refetch();
   };
 
-  const todos = data?.todos || [];
-  const completedCount = todos.filter(todo => todo.completed).length;; 
-  const totalCount = todos.length;
+  const handleDelete = async (id) => {
+    await deleteTodoMutation({ variables: { id } });
+    refetch();
+  };
 
+  const handleToggle = async (id) => {
+    await toggleTodoMutation({ variables: { id } });
+    refetch();
+  };
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm('Do you really want to log out?');
+    if (confirmLogout) {
+      localStorage.removeItem('userId');
+      navigate('/');
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  const todos = data?.todos || [];
+  const completedCount = todos.filter(todo => todo.completed).length;
+  const totalCount = todos.length;
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
