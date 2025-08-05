@@ -16,8 +16,8 @@ const LOGIN = gql`
 `;
 
 const SIGNUP = gql`
-  mutation Signup($email: String!, $password: String!) {
-    signup(email: $email, password: $password) {
+  mutation Signup($name: String!, $email: String!, $password: String!) {
+    signup(name: $name, email: $email, password: $password) {
       id
       email
     }
@@ -33,6 +33,7 @@ const LoginPage = () => {
         email: '',
         password: ''
     });
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleInputChange = (e) => {
@@ -40,10 +41,12 @@ const LoginPage = () => {
             ...formData,
             [e.target.name]: e.target.value
         });
+        if (error) setError('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
 
         const { name, email, password } = formData;
         if (!email || !password) {
@@ -51,9 +54,14 @@ const LoginPage = () => {
             return;
         }
 
+        if (isSignUp && !name) {
+            setError('Please enter your name');
+            return;
+        }
+
         if (!isSignUp) {
             try {
-                const { data } = await signup({ variables: { email, password } });
+                const { data } = await signup({ variables: { name, email, password } });
                 localStorage.setItem('userId', data.signup.id);
                 navigate('/todos');
             } catch (err) {
@@ -74,6 +82,7 @@ const LoginPage = () => {
     const toggleMode = () => {
         setIsSignUp(!isSignUp);
         setFormData({ name: '', email: '', password: '' });
+        setError(''); // Clear errors when switching modes
     };
 
     return (
