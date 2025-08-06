@@ -56,7 +56,6 @@ TodoBreeze is a responsive web application built with React and Tailwind CSS, al
 ### Available Scripts
 
 - `npm start`: Runs the app in development mode.
-- `npm test`: Launches the test runner in interactive watch mode.
 - `npm run build`: Builds the app for production to the `build` folder.
 - `npm run eject`: Ejects the Create React App configuration (one-way operation).
 
@@ -72,6 +71,8 @@ The app is deployed on Vercel. To deploy your own instance:
 4. Deploy the app and access it via the provided Vercel URL.
 
 Visit the live demo: [https://to-do-website-liard.vercel.app/](https://to-do-website-liard.vercel.app/)
+
+<img src="public/vercel.png" alt="screenshot of vercel overview" width="75%">
 
 ## Project Structure
 
